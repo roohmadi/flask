@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <style>
+        body {
+            background-color: #f2f2f2; /* Warna latar belakang */
+            color: #333; /* Warna teks */
+            font-family: Arial, sans-serif; /* Font teks */
+        }
+
+        h1 {
+            color: #007bff; /* Warna teks untuk judul */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5; /* Warna latar belakang saat dihover */
+        }
+
+        input[type="submit"] {
+            background-color: #007bff; /* Warna tombol submit */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* Warna tombol submit saat dihover */
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Expense Tracker</h1>
+
+    <!-- Tombol untuk mengatur saldo awal -->
+    <a href="/set_initial_balance">Set Initial Balance</a>
+
+    <!-- Form untuk menambahkan pengeluaran -->
+    <h2>Add New Expense</h2>
+    <form action="/add" method="post">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+        
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" required><br><br>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required><br><br>
+
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" min="0" step="0.01" required><br><br>
+
+        <input type="submit" value="Add Expense">
+    </form>
+
+    <!-- Form untuk menghitung total pengeluaran bulanan -->
+    <h2>Monthly Expenses</h2>
+    <form action="/monthly_expense" method="GET">
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" required><br><br>
+
+        <label for="month">Month:</label>
+        <input type="number" id="month" name="month" min="1" max="12" required><br><br>
+
+        <input type="submit" value="Calculate Total">
+    </form>
+
+    <!-- Tampilkan total pengeluaran bulanan jika ada -->
+    {% if total %}
+    <p>Total expenses for {{ month }}/{{ year }}: {{ total }}</p>
+    {% endif %}
+
+    <!-- Tabel untuk menampilkan daftar pengeluaran -->
+    <h2>Expenses</h2>
+    <table border="1" style="width: 80%;">
+        <tr>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Action</th> <!-- Tambahkan kolom Action -->
+        </tr>
+        <!-- Gunakan loop untuk menampilkan setiap pengeluaran -->
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ expense[1] }}</td>
+            <td>{{ expense[2] }}</td>
+            <td>{{ expense[3] }}</td>
+            <td>{{ expense[4] }}</td>
+            <td>
+                <form action="/delete_expense" method="post">
+                    <input type="hidden" name="expense_id" value="{{ expense[0] }}">
+                    <input type="submit" value="Delete">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
